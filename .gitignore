@@ -1,5 +1,11 @@
 *.py[co]
 
+# Vim backup files
+*.swp
+
+# SQlite databases
+*.db3
+
 # Packages
 *.egg
 *.egg-info
