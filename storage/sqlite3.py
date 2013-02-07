@@ -1,12 +1,21 @@
 from __future__ import absolute_import
 import sqlite3
+import os.path
+from copy import copy
+from settings import APP_PATH
 
 CONFIG_DATABASE = 'db'
+
+DEFAULT_CONFIG = {
+  CONFIG_DATABASE: os.path.join(APP_PATH, 'easy-todo.db3')
+}
+
 
 class SQLite3Storage(object):
     def __init__(self, config):
         # TODO: config check
-        self.config = config
+        self.config = copy(DEFAULT_CONFIG)
+        self.config.update(config)
 
 
     def __enter__(self):
@@ -60,6 +69,3 @@ class SQLite3Storage(object):
             self.cursor.execute("UPDATE todo_items \
                                  SET priority = ? \
                                  WHERE id = ?", (priority, id))
-
-
-
