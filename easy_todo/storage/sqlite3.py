@@ -23,6 +23,7 @@ class SQLite3Storage(object):
         self.connection = sqlite3.connect(database)
         self.cursor = self.connection.cursor()
         self.__maybeInitDatabase()
+        return self
 
 
     def __exit__(self, type, value, tb):
@@ -32,40 +33,53 @@ class SQLite3Storage(object):
 
 
     def __maybeInitDatabase(self):
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS todo_items ( \
-                                 id INTEGER PRIMARY KEY, \
-                                 priority INTEGER NOT NULL DEFAULT 5, \
-                                 item TEXT NOT NULL DEFAULT ''    \
-                             );")
+        self.cursor.execute("\
+            CREATE TABLE IF NOT EXISTS todo_items ( \
+                id INTEGER PRIMARY KEY, \
+                priority INTEGER NOT NULL DEFAULT 5, \
+                item TEXT NOT NULL DEFAULT ''    \
+            );")
 
 
     def selectItems(self, max_priority, min_priority, limit):
-        result = self.cursor.execute("SELECT id, item, priority FROM todo_items \
-                                      WHERE priority <= ? AND priority >= ? \
-                                      ORDER BY priority, id LIMIT ?",
-                                     (max_priority, min_priority, limit))
-        for row in result:
+        query_result = self.cursor.execute("\
+            SELECT id, item, priority FROM todo_items \
+            WHERE priority <= ? AND priority >= ? \
+            ORDER BY priority, id LIMIT ?",
+            (max_priority, min_priority, limit))
+
+        items = []
+        for row in query_result:
             (id, item, priority) = row
-            print "{0}) {1} [{2}]".format(id, item, priority)
+            items.append(dict(id=id, item=item, priority=priority))
+        return items
 
 
     def addItem(self, priority, item):
-        self.cursor.execute("INSERT INTO todo_items \
-                             VALUES(NULL, ?, ?)", (priority, item))
+        self.cursor.execute("\
+            INSERT INTO todo_items \
+            VALUES(NULL, ?, ?)",
+            (priority, item))
 
 
     def removeItem(self, id):
-        self.cursor.execute("DELETE FROM todo_items \
-                             WHERE id = ?", id)
+        self.cursor.execute("\
+            DELETE FROM todo_items \
+            WHERE id = ?",
+            id)
 
 
     def updateItem(self, id, text=None, priority=None):
         # TODO: Refactorize to use only one query
         if text:
-            self.cursor.execute("UPDATE todo_items \
-                                 SET item = ? \
-                                 WHERE id = ?", (text, id))
+            self.cursor.execute("\
+                UPDATE todo_items \
+                SET item = ? \
+                WHERE id = ?",
+                (text, id))
         if priority:
-            self.cursor.execute("UPDATE todo_items \
-                                 SET priority = ? \
-                                 WHERE id = ?", (priority, id))
+            self.cursor.execute("\
+                UPDATE todo_items \
+                SET priority = ? \
+                WHERE id = ?",
+                (priority, id))
