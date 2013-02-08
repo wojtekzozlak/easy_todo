@@ -5,6 +5,14 @@ A simple, command-line oriented TODO list manager in very early stage
 of development.
 
 
+Installation
+-------------
+
+    pyton setup.py install
+        
+Note: It may require root privileges.
+
+
 How to use?
 -----------
 
@@ -12,21 +20,21 @@ Few examples
 
 * Adding an item:
 
-        python easy-todo.py -a -t "My new item" -p 5
+        easy-todo -at "My new item" -p 5
 
 
 * Displaying items:
 
-        python easy-todo.py -q
+        easy-todo -q
 
 
 * Updating items:
 
-        python easy-todo.py -u 1 -t "My new description" -p 0
+        easy-todo -u 1 -t "My new description" -p 0
 
 * Removing items:
 
-        python easy-todo.py -r 1
+        easy-todo -r 1
 
 
-Try "python easy-todo.py --help" for more options.
+Try "easy-todo --help" for more options.
