@@ -1,0 +1,20 @@
+#!/usr/bin/python
+# coding: utf-8
+#
+# Copyright Wojciech Żółtak 2012
+#
+import easy_todo.storage
+from easy_todo.options import createOptionParser, Driver
+from easy_todo.settings import getConfig
+
+
+def main():
+    parser = createOptionParser()
+    (options, args) = parser.parse_args()
+    config = getConfig()
+    driver = Driver(config)
+    driver.run(parser.parse_args())
+
+
+if __name__ == "__main__":
+    main()
